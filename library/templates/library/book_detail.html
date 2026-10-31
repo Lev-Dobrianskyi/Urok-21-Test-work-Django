@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} — Library{% endblock %}
+
+{% block content %}
+  <article class="book-detail">
+    <h1>{{ book.title }}</h1>
+    <p><strong>Author:</strong>
+      <a href="{% url 'library:author_detail' book.author.pk %}">{{ book.author.full_name }}</a>
+    </p>
+    <p><strong>Genre:</strong> {{ book.genre.name }}</p>
+    <p><strong>Year:</strong> {{ book.year }}</p>
+    <p><strong>Pages:</strong> {{ book.pages }}</p>
+    {% if book.description %}
+      <p class="description">{{ book.description|linebreaks }}</p>
+    {% endif %}
+
+    {% if book.is_available %}
+      <p><strong>Available for booking</strong></p>
+      <a class="btn" href="{% url 'library:request_create' book.pk %}">Book now</a>
+    {% else %}
+      <p class="badge"><strong>Checked out</strong></p>
+    {% endif %}
+
+    {% if user.is_staff %}
+      <div class="actions">
+        <a class="btn" href="{% url 'library:book_update' book.pk %}">Edit</a>
+        <a class="btn btn-danger" href="{% url 'library:book_delete' book.pk %}">Delete</a>
+      </div>
+    {% endif %}
+
+    <p><a href="{% url 'library:book_list' %}">← Back to catalog</a></p>
+  </article>
+{% endblock %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Бібліотека{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{% url 'library:home' %}">📚 Бібліотека</a>
+    <nav class="site-nav">
+      <a href="{% url 'library:book_list' %}">Книги</a>
+      {% if user.is_authenticated %}
+        {% if user.is_staff %}
+          <a href="{% url 'library:book_create' %}">Додати книгу</a>
+        {% endif %}
+        <span class="user-badge">{{ user.username }}</span>
+        <form method="post" action="{% url 'accounts:logout' %}" class="inline-form">
+          {% csrf_token %}
+          <button type="submit" class="link-button">Вийти</button>
+        </form>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Увійти</a>
+        <a href="{% url 'accounts:register' %}">Реєстрація</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="message {{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; {% now "Y" %} Бібліотека</p>
+  </footer>
+</body>
+</html>

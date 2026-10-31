@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ author.full_name }} — Library{% endblock %}
+{% block content %}
+  <h1>{{ author.full_name }}</h1>
+  <p>{{ author.country }}{% if author.birth_year %} · {{ author.birth_year }}{% endif %}</p>
+
+  <h2>Books by this author</h2>
+  {% for book in books %}
+    <article class="book-card">
+      <h3><a href="{% url 'library:book_detail' book.pk %}">{{ book.title }}</a></h3>
+      <p>{{ book.genre.name }} · {{ book.year }}</p>
+      {% if not book.is_available %}<p class="badge">Checked out</p>{% endif %}
+    </article>
+  {% empty %}
+    <p class="empty">No books by this author yet.</p>
+  {% endfor %}
+{% endblock %}

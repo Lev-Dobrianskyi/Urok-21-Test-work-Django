@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Home — Library{% endblock %}
+{% block content %}
+  <section class="hero">
+    <h1>Welcome to the library</h1>
+    <p>Browse our catalog of books.</p>
+    <a class="btn" href="{% url 'library:book_list' %}">Open catalog</a>
+  </section>
+
+  <h2>New arrivals</h2>
+  {% for book in newest %}
+    <article class="book-card">
+      <h3><a href="{% url 'library:book_detail' book.pk %}">{{ book.title }}</a></h3>
+      <p class="author">
+        <a href="{% url 'library:author_detail' book.author.pk %}">{{ book.author.full_name }}</a>
+      </p>
+      <p class="category">{{ book.genre.name }}</p>
+      <p class="year">{{ book.year }}</p>
+      {% if not book.is_available %}<p class="badge">Checked out</p>{% endif %}
+    </article>
+  {% empty %}
+    <p class="empty">No books yet.</p>
+  {% endfor %}
+{% endblock %}

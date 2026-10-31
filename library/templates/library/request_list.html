@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Requests{% endblock %}
+{% block content %}
+  <h1>Requests</h1>
+  {% for r in requests %}
+    <article class="book-card">
+      <h2>{{ r.reader_name }} — {{ r.book.title }}</h2>
+      <p>{{ r.phone }}</p>
+      <p class="year">{{ r.created_at|date:"Y-m-d H:i" }}</p>
+    </article>
+  {% empty %}
+    <p class="empty">No requests yet.</p>
+  {% endfor %}
+{% endblock %}

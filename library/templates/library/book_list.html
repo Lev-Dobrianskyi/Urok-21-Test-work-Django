@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Catalog — Library{% endblock %}
+
+{% block content %}
+  <h1>Book catalog</h1>
+
+  <form method="get" class="form" style="display:flex;gap:.5rem;align-items:end;margin-bottom:1rem;">
+    <div style="flex:1;">
+      <label for="q">Search:</label>
+      <input type="text" name="q" id="q" value="{{ q }}" placeholder="Title or author">
+    </div>
+    {% if active_genre %}<input type="hidden" name="genre" value="{{ active_genre }}">{% endif %}
+    <button type="submit" class="btn">Search</button>
+    {% if q %}<a href="{% url 'library:book_list' %}" class="btn btn-secondary">Reset</a>{% endif %}
+  </form>
+
+  <div class="genre-filter" style="margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+    <a href="?{% if q %}q={{ q }}{% endif %}"
+       class="btn {% if not active_genre %}btn-secondary{% endif %}">All</a>
+    {% for g in genres %}
+      <a href="?genre={{ g.pk }}{% if q %}&q={{ q }}{% endif %}"
+         class="btn {% if active_genre == g.pk|stringformat:'s' %}btn-secondary{% endif %}">{{ g.name }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="book-grid">
+    {% for book in books %}
+      <article class="book-card">
+        <h2><a href="{% url 'library:book_detail' book.pk %}">{{ book.title }}</a></h2>
+        <p class="author">
+          <a href="{% url 'library:author_detail' book.author.pk %}">{{ book.author.full_name }}</a>
+        </p>
+        <p class="category">{{ book.genre.name }}</p>
+        <p class="year">{{ book.year }} · {{ book.pages }} p.</p>
+        {% if not book.is_available %}<p class="badge">Checked out</p>{% endif %}
+      </article>
+    {% empty %}
+      <p class="empty">Nothing matches your query.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
